@@ -1,46 +1,51 @@
 package com.codery.bot.botit;
 
 import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.function.Consumer;
 
 public class GlobalKeyListener implements NativeKeyListener, AutoCloseable {
 
-    private final Set<GlobalKeyListenerObserver> observables = new HashSet<>();
+    private Consumer<NativeKeyEvent> onKeyPressed;
+    private Consumer<NativeKeyEvent> onKeyReleased;
+    private Consumer<NativeKeyEvent> onKeyTyped;
 
-    public void registerObserver(GlobalKeyListenerObserver o) {
-        observables.add(o);
+    public void onKeyPressed(Consumer<NativeKeyEvent> c) {
+        onKeyPressed = c;
     }
 
-    public void notifyObserversPress(NativeKeyEvent evt) {
-        observables.forEach((o) -> o.updatePressEvent(evt));
+    public void onKeyReleased(Consumer<NativeKeyEvent> c) {
+        onKeyReleased = c;
     }
 
-    public void notifyObserversRelease(NativeKeyEvent evt) {
-        observables.forEach((o) -> o.updateReleaseEvent(evt));
-    }
-
-    public void notifyObserversType(NativeKeyEvent evt) {
-        observables.forEach((o) -> o.updateTypeKeyEvent(evt));
+    public void onKeyTyped(Consumer<NativeKeyEvent> c) {
+        onKeyTyped = c;
     }
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
-        notifyObserversPress(e);
+        if (onKeyPressed == null) {
+            return;
+        }
+        onKeyPressed.accept(e);
     }
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
-        notifyObserversRelease(e);
+        if (onKeyReleased == null) {
+            return;
+        }
+        onKeyReleased.accept(e);
     }
 
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
-        notifyObserversType(e);
+        if (onKeyTyped == null) {
+            return;
+        }
+        onKeyTyped.accept(e);
     }
 
     public void start() {

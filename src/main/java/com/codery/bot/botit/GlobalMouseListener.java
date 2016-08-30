@@ -14,6 +14,27 @@ public class GlobalMouseListener implements NativeMouseInputListener, AutoClosea
     private Consumer<NativeMouseEvent> onMouseClicked;
     private Consumer<NativeMouseEvent> onMousePressed;
 
+    public void onMouseReleased(Consumer<NativeMouseEvent> c) {
+        onMouseReleased = c;
+    }
+
+    public void onMouseClicked(Consumer<NativeMouseEvent> c) {
+        onMouseClicked = c;
+    }
+
+    public void onMousePressed(Consumer<NativeMouseEvent> c) {
+        onMousePressed = c;
+    }
+
+    public void onMouseMoved(Consumer<NativeMouseEvent> c) {
+        onMouseMoved = c;
+    }
+
+    public void onMouseDragged(Consumer<NativeMouseEvent> c) {
+        onMouseDragged = c;
+    }
+
+
     public void nativeMouseClicked(NativeMouseEvent e) {
         if (onMouseClicked == null) {
             return;
@@ -49,23 +70,6 @@ public class GlobalMouseListener implements NativeMouseInputListener, AutoClosea
         onMouseDragged.accept(e);
     }
 
-    public void onMouseReleased(Consumer<NativeMouseEvent> c) {
-        onMouseReleased = c;
-    }
-    public void onMouseClicked(Consumer<NativeMouseEvent> c) {
-        onMouseClicked = c;
-    }
-    public void onMousePressed(Consumer<NativeMouseEvent> c) {
-        onMousePressed = c;
-    }
-    public void onMouseMoved(Consumer<NativeMouseEvent> c) {
-        onMouseMoved= c;
-    }
-    public void onMouseDragged(Consumer<NativeMouseEvent> c) {
-        onMouseDragged = c;
-    }
-
-
     public void start() {
         GlobalScreen.addNativeMouseListener(this);
         GlobalScreen.addNativeMouseMotionListener(this);
@@ -74,6 +78,5 @@ public class GlobalMouseListener implements NativeMouseInputListener, AutoClosea
     public void close() throws Exception {
         GlobalScreen.removeNativeMouseListener(this);
         GlobalScreen.removeNativeMouseMotionListener(this);
-        GlobalScreen.unregisterNativeHook();
     }
 }
