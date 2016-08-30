@@ -1,7 +1,7 @@
 package com.codery.bot.botit;
 
 /**
- * Created by thomas on 06/08/2016.
+ * Botit root exception. Should be the only exception seen from the outside world.
  */
 public class BotitException extends RuntimeException {
 

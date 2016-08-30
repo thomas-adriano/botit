@@ -6,6 +6,9 @@ import org.jnativehook.mouse.NativeMouseInputListener;
 
 import java.util.function.Consumer;
 
+/**
+ * Listen for mouse events happening in the global screen, ignoring which application is focused.
+ */
 public class GlobalMouseListener implements NativeMouseInputListener, AutoCloseable {
 
     private Consumer<NativeMouseEvent> onMouseReleased;

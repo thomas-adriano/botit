@@ -1,17 +1,16 @@
 package com.codery.bot.botit;
 
 import com.codery.bot.botit.actions.Action;
+import com.codery.bot.botit.actions.KeyPress;
 import com.codery.bot.botit.actions.LeftClick;
 import com.codery.bot.botit.actions.RightClick;
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.mouse.NativeMouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
 
 /**
- * Created by thomas on 05/08/2016.
+ * Represents a script, in the sense of a list of steps to be executed.
  */
 public class Script {
 
@@ -41,7 +40,16 @@ public class Script {
         this.startWhen = startWhen;
     }
 
-    public Script rightClick(long interval) {
+    public Script pressKey(int code, int interval) {
+        List<Action> newActions = new ArrayList<>();
+        if (actions != null) {
+            newActions.addAll(actions);
+        }
+        newActions.add(new KeyPress(code, interval));
+        return new Script(this.forever, this.times, this.whilee, newActions, this.keepAlive, this.startWhen);
+    }
+
+    public Script rightClick(int interval) {
         List<Action> newActions = new ArrayList<>();
         if (actions != null) {
             newActions.addAll(actions);
@@ -50,7 +58,7 @@ public class Script {
         return new Script(this.forever, this.times, this.whilee, newActions, this.keepAlive, this.startWhen);
     }
 
-    public Script leftClick(long interval) {
+    public Script leftClick(int interval) {
         List<Action> newActions = new ArrayList<>();
         if (actions != null) {
             newActions.addAll(actions);

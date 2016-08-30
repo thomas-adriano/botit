@@ -1,17 +1,14 @@
 package com.codery.bot.botit.actions;
 
-/**
- * Created by Thomas.Adriano on 30/08/2016.
- */
-public abstract class Click implements Action {
+public abstract class Click extends AbstractAction {
 
-    protected long interval;
+    protected int interval;
 
     public Click() {
-        this.interval = 50;
+        this(50);
     }
 
-    public Click(long interval) {
+    public Click(int interval) {
         if (interval < 50) {
             interval = 50;
         }

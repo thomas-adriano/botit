@@ -6,6 +6,9 @@ import org.jnativehook.keyboard.NativeKeyListener;
 
 import java.util.function.Consumer;
 
+/**
+ * Listen for keyboard events happening in the global screen, ignoring which application is focused.
+ */
 public class GlobalKeyListener implements NativeKeyListener, AutoCloseable {
 
     private Consumer<NativeKeyEvent> onKeyPressed;

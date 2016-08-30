@@ -4,13 +4,18 @@ import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
- * Created by thomasadriano on 8/29/16.
+ * Provide ways to listen to mouse or keyboard events.
  */
 public class GlobalEventListener {
 
+    /**
+     * Provide an environment to handle mouse and keyboard events. The method's consumer/client does not need to worry
+     * with freeing resources or native hooks registration.
+     *
+     * @param c the logic to be executed with the mouse/keyboard events listeners
+     */
     public static void whileListeningForMouseAndKeyEventsDo(BiConsumer<GlobalMouseListener, GlobalKeyListener> c) {
         try (GlobalMouseListener gml = new GlobalMouseListener(); GlobalKeyListener gkl = new GlobalKeyListener()) {
             GlobalScreen.registerNativeHook();
