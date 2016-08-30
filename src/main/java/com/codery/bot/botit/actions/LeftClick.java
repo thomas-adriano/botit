@@ -7,25 +7,18 @@ import java.util.function.Consumer;
 /**
  * Created by Thomas.Adriano on 30/08/2016.
  */
-public class LeftClick implements Action {
-    public long interval;
-
+public class LeftClick extends Click {
     public LeftClick() {
-        this.interval = 50;
+        super();
     }
 
     public LeftClick(long interval) {
-        this.interval = interval;
+        super(interval);
     }
 
     @Override
     public Consumer<BotitRobot> getExecutionLogic() {
-        if (interval < 50) {
-            interval = 50;
-        }
-        return (robot) -> {
-            robot.leftClick(interval);
-        };
+        return robot -> robot.leftClick(super.interval);
     }
 
 }

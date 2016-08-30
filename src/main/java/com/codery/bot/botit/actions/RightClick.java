@@ -7,25 +7,17 @@ import java.util.function.Consumer;
 /**
  * Created by thomasadriano on 8/29/16.
  */
-public class RightClick implements Action {
-
-    public long interval;
-
+public class RightClick extends Click {
     public RightClick() {
-        this.interval = 50;
+        super();
     }
 
     public RightClick(long interval) {
-        this.interval = interval;
+        super(interval);
     }
 
     @Override
     public Consumer<BotitRobot> getExecutionLogic() {
-        if (interval < 50) {
-            interval = 50;
-        }
-        return (robot) -> {
-            robot.rightClick(interval);
-        };
+        return robot -> robot.rightClick(super.interval);
     }
 }
