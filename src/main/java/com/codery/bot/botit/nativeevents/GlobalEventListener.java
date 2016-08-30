@@ -1,5 +1,6 @@
-package com.codery.bot.botit;
+package com.codery.bot.botit.nativeevents;
 
+import com.codery.bot.botit.BotitException;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 

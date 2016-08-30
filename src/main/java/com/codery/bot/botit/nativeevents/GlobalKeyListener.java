@@ -1,4 +1,4 @@
-package com.codery.bot.botit;
+package com.codery.bot.botit.nativeevents;
 
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.keyboard.NativeKeyEvent;
