@@ -1,6 +1,7 @@
 package com.codery.bot.botit;
 
 import com.codery.bot.botit.actions.Action;
+import com.codery.bot.botit.actions.LeftClick;
 import com.codery.bot.botit.actions.RightClick;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.mouse.NativeMouseEvent;
@@ -45,20 +46,25 @@ public class Script {
         if (actions != null) {
             newActions.addAll(actions);
         }
-        newActions.add(new RightClick().interval(interval));
+        newActions.add(new RightClick(interval));
         return new Script(this.forever, this.times, this.whilee, newActions, this.keepAlive, this.startWhen);
     }
 
-    public Script leftClick() {
-        return this;
+    public Script leftClick(long interval) {
+        List<Action> newActions = new ArrayList<>();
+        if (actions != null) {
+            newActions.addAll(actions);
+        }
+        newActions.add(new LeftClick(interval));
+        return new Script(this.forever, this.times, this.whilee, newActions, this.keepAlive, this.startWhen);
     }
 
     public Script forever() {
-        return this;
+        return new Script(true, this.times, this.whilee, this.actions, this.keepAlive, this.startWhen);
     }
 
     public Script times(int times) {
-        return this;
+        return new Script(this.forever, times, this.whilee, this.actions, this.keepAlive, this.startWhen);
     }
 
     public Script whilee(BiPredicate<Integer, Integer> p) {

@@ -5,17 +5,16 @@ import com.codery.bot.botit.BotitRobot;
 import java.util.function.Consumer;
 
 /**
- * Created by thomasadriano on 8/29/16.
+ * Created by Thomas.Adriano on 30/08/2016.
  */
-public class RightClick implements Action {
-
+public class LeftClick implements Action {
     public long interval;
 
-    public RightClick() {
+    public LeftClick() {
         this.interval = 50;
     }
 
-    public RightClick(long interval) {
+    public LeftClick(long interval) {
         this.interval = interval;
     }
 
@@ -25,7 +24,8 @@ public class RightClick implements Action {
             interval = 50;
         }
         return (robot) -> {
-            robot.rightClick(interval);
+            robot.leftClick(interval);
         };
     }
+
 }

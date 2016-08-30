@@ -40,6 +40,15 @@ public class BotitRobot {
         sleep(interval);
     }
 
+    public void leftClick(long interval) {
+        interval = interval - 200; /*click interval sum*/
+        robot.mousePress(InputEvent.BUTTON1_MASK);
+        robot.delay(100);
+        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+        robot.delay(100);
+        sleep(interval);
+    }
+
     private void setJNativeHookLogLevelToWarning() {
         // Get the logger for "org.jnativehook" and set the level to warning.
         Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
