@@ -80,7 +80,7 @@ public class BotitRobot {
                     }
 
                     if (hasTimes && hasWhile) {
-                        for (int i = 0; i < scr.getTimes() || scr.getWhilee().test(capturedMouseEvtBuffer[0], null); i++) {
+                        for (int i = 0; i < scr.getTimes() || scr.getWhilee().test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0]); i++) {
                             executeScriptActions(scr);
                         }
                     } else if (hasTimes) {
@@ -88,7 +88,7 @@ public class BotitRobot {
                             executeScriptActions(scr);
                         }
                     } else if (hasWhile) {
-                        while (scr.getWhilee().test(capturedMouseEvtBuffer[0], null)) {
+                        while (scr.getWhilee().test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0])) {
                             executeScriptActions(scr);
                         }
                     }
@@ -113,9 +113,7 @@ public class BotitRobot {
     }
 
     private void executeScriptActions(Script scr) {
-        scr.getActions().forEach((act) -> {
-            act.getExecutionLogic().accept(this);
-        });
+        scr.getActions().forEach((act) -> act.getExecutionLogic().accept(this));
     }
 
     public static void sleep(long millis) {
