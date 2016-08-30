@@ -16,31 +16,37 @@ public class Script {
 
     private final boolean forever;
     private final int times;
-    private final BiPredicate<NativeMouseEvent, NativeKeyEvent> whilee;
+    private final BiPredicate<Integer, Integer> whilee;
     private final List<Action> actions;
+    private final boolean keepAlive;
+    private final BiPredicate<Integer, Integer> startWhen;
 
-    public Script(boolean forever, int times, BiPredicate<NativeMouseEvent, NativeKeyEvent> whilee, List<Action> actions) {
+    public Script() {
+        this.forever = false;
+        this.times = 0;
+        this.whilee = null;
+        this.actions = null;
+        this.keepAlive = false;
+        this.startWhen = null;
+    }
+
+    private Script(boolean forever, int times, BiPredicate<Integer, Integer> whilee, List<Action> actions,
+                   boolean keepAlive, BiPredicate<Integer, Integer> startWhen) {
         this.forever = forever;
         this.times = times;
         this.whilee = whilee;
         this.actions = actions;
-    }
-
-    public Script(Script scr) {
-        this.forever = scr.forever;
-        this.times = scr.times;
-        this.whilee = scr.whilee;
-        this.actions = scr.actions;
-    }
-
-    public static Script newInstance() {
-        return new Script(false, 0, null, null);
+        this.keepAlive = keepAlive;
+        this.startWhen = startWhen;
     }
 
     public Script rightClick(long interval) {
-        List<Action> newActions = new ArrayList<>(actions);
+        List<Action> newActions = new ArrayList<>();
+        if (actions != null) {
+            newActions.addAll(actions);
+        }
         newActions.add(new RightClick().interval(interval));
-        return new Script(this.forever, this.times, this.whilee, newActions);
+        return new Script(this.forever, this.times, this.whilee, newActions, this.keepAlive, this.startWhen);
     }
 
     public Script leftClick() {
@@ -55,8 +61,16 @@ public class Script {
         return this;
     }
 
-    public Script whilee(BiPredicate<NativeMouseEvent, NativeKeyEvent> p) {
-        return new Script(this.forever, this.times, p, this.actions);
+    public Script whilee(BiPredicate<Integer, Integer> p) {
+        return new Script(this.forever, this.times, p, this.actions, this.keepAlive, this.startWhen);
+    }
+
+    public Script keepAlive() {
+        return new Script(this.forever, this.times, this.whilee, this.actions, true, this.startWhen);
+    }
+
+    public Script startWhen(BiPredicate<Integer, Integer> startWhen) {
+        return new Script(this.forever, this.times, this.whilee, this.actions, this.keepAlive, startWhen);
     }
 
     public boolean isForever() {
@@ -67,11 +81,19 @@ public class Script {
         return times;
     }
 
-    public BiPredicate<NativeMouseEvent, NativeKeyEvent> getWhilee() {
+    public BiPredicate<Integer, Integer> getWhilee() {
         return whilee;
     }
 
     public List<Action> getActions() {
         return actions;
+    }
+
+    public boolean isKeepAlive() {
+        return keepAlive;
+    }
+
+    public BiPredicate<Integer, Integer> getStartWhen() {
+        return startWhen;
     }
 }
