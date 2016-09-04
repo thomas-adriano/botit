@@ -40,6 +40,10 @@ public class Script {
         this.startWhen = startWhen;
     }
 
+    public Script pressKey(int code) {
+        return this.pressKey(code, 0);
+    }
+
     public Script pressKey(int code, int interval) {
         List<Action> newActions = new ArrayList<>();
         if (actions != null) {
