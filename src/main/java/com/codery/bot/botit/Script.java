@@ -30,7 +30,7 @@ public class Script {
     }
 
     public Script pressKey(EventTypes evt, int interval) {
-        return newAction(new KeyPress(Integer.valueOf(evt.value()), interval));
+        return newAction(new KeyPress(evt.getEventCode(), interval));
     }
 
     public Script rightClick() {

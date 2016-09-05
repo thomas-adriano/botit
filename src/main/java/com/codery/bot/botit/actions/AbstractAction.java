@@ -14,7 +14,7 @@ public abstract class AbstractAction implements Action {
         terminated = false;
         doExecute(robot);
         terminated = true;
-        evtLog.addEvent(this.getEventType());
+        evtLog.logEvent(this.getEventType());
     }
 
     protected abstract void doExecute(BotitRobot robot);

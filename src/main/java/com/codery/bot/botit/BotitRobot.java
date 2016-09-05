@@ -1,12 +1,17 @@
 package com.codery.bot.botit;
 
+import com.codery.bot.botit.actions.Action;
 import com.codery.bot.botit.nativeevents.GlobalEventListener;
 import org.jnativehook.GlobalScreen;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.function.BiPredicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +25,8 @@ public class BotitRobot {
      * A number representing the absence of a event (mouse/keyboard) code
      */
     public static final int NO_EVENT_CODE = -9999;
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BotitRobot.class);
+    private final Map<Action, Future<?>> actionsResult = new HashMap<>();
     private final EventLog eventLog;
     private final Robot robot;
     private final ExecutorService executor;
@@ -120,10 +127,12 @@ public class BotitRobot {
      * @param scr script to be executed
      */
     public void runScript(Script scr) {
+        LOGGER.info("Starting bot execution...");
         setJNativeHookLogLevelToWarning();
         if (forever) {
             while (true) {
                 executeScriptActions(scr);
+                sleep(50);
             }
         } else {
             boolean hasTimes = times > 0;
@@ -134,7 +143,7 @@ public class BotitRobot {
                 final Integer[] capturedMouseEvtBuffer = {NO_EVENT_CODE};
                 final Integer[] capturedKeyEvtBuffer = {NO_EVENT_CODE};
                 mouseListener.onMouseReleased(evt -> capturedMouseEvtBuffer[0] = evt.getButton());
-                keyListener.onKeyReleased(evt -> capturedKeyEvtBuffer[0] = evt.getKeyCode());
+                keyListener.onKeyReleased(evt -> capturedKeyEvtBuffer[0] = evt.getRawCode());
                 mouseListener.start();
                 keyListener.start();
 
@@ -147,14 +156,17 @@ public class BotitRobot {
                     if (hasTimes && hasWhile) {
                         for (int i = 0; i < times || whilee.test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0]); i++) {
                             executeScriptActions(scr);
+                            sleep(50);
                         }
                     } else if (hasTimes) {
                         for (int i = 0; i < times; i++) {
                             executeScriptActions(scr);
+                            sleep(50);
                         }
                     } else if (hasWhile) {
                         while (whilee.test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0])) {
                             executeScriptActions(scr);
+                            sleep(50);
                         }
                     }
 
@@ -205,12 +217,14 @@ public class BotitRobot {
     private void executeScriptActions(Script scr) {
         scr.getActions().forEach(act -> {
             if (act.terminated()) {
-                executor.execute(() -> act.execute(this, eventLog));
-            }
-        });
-        scr.getAfterScripts().forEach((constraint, script) -> {
-            if (eventLog.checkConstraint(constraint)) {
-                executeScriptActions(script);
+                Future<?> f = executor.submit(() -> act.execute(this, eventLog));
+                actionsResult.put(act, f);
+
+                scr.getAfterScripts().forEach((constraint, script) -> {
+                    if (eventLog.checkConstraint(constraint)) {
+                        executeScriptActions(script);
+                    }
+                });
             }
         });
     }

@@ -6,6 +6,7 @@ import com.codery.bot.botit.Measure;
 import com.codery.bot.botit.Script;
 import org.junit.Test;
 
+import java.awt.event.KeyEvent;
 import java.util.function.BiPredicate;
 
 /**
@@ -27,9 +28,9 @@ public class UsageTest {
 
         bot.runScript(
                 new Script()
-                        .rightClick(1000)
-                        .thenAfter(EventTypes.RIGHT_CLICK, 3, Measure.TIMES,
-                                new Script().pressKey(EventTypes._4, 1000))
+                        .pressKey(EventTypes._0, 250)
+                        .thenAfter(EventTypes._0, 3, Measure.TIMES,
+                                new Script().pressKey(EventTypes._1))
         );
     }
 

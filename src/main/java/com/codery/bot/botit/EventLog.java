@@ -1,25 +1,32 @@
 package com.codery.bot.botit;
 
-import java.util.HashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Thomas.Adriano on 05/09/2016.
  */
 public class EventLog {
 
-    private final Map<EventTypes, Integer> events = new HashMap<>();
+    private final Map<EventTypes, Integer> events = new ConcurrentHashMap<>();
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventLog.class);
 
-    public void addEvent(EventTypes evt) {
+    public synchronized void logEvent(EventTypes evt) {
         Integer quantity = events.get(evt);
         if (quantity == null) {
-            events.put(evt, 1);
+            quantity = 1;
         } else {
-            events.put(evt, quantity++);
+            ++quantity;
         }
+        events.put(evt, quantity);
+        LOGGER.debug("Logging event " + evt + " with quantity: " + quantity);
     }
 
     public boolean checkConstraint(Constraint c) {
+        LOGGER.debug("Checking constraint: \"" + c + "\"");
         boolean ret = false;
         for (Map.Entry<EventTypes, Integer> e : events.entrySet()) {
             if (e.getKey() == c.getEvt() && e.getValue() >= c.getQuantity()) {
@@ -33,7 +40,6 @@ public class EventLog {
         if (ret) {
             events.remove(c.getEvt());
         }
-
         return ret;
     }
 

@@ -32,6 +32,6 @@ public class KeyPress extends AbstractAction {
 
     @Override
     public EventTypes getEventType() {
-        return EventTypes.fromString(String.valueOf(code));
+        return EventTypes.fromCode(code);
     }
 }
