@@ -21,12 +21,14 @@ public class AutoRightClickerExecution {
         BiPredicate<Integer, Integer> middleButtonNotPressed = (mouseEvent, keyEvent) -> mouseEvent != MOUSE_BTN_MIDDLE;
         BiPredicate<Integer, Integer> middleButtonPressed = (mouseEvent, keyEvent) -> mouseEvent == MOUSE_BTN_MIDDLE;
 
-        BotitRobot.newInstance().runScript(
+        BotitRobot bot = BotitRobot.newInstance();
+        bot.setStartWhen(middleButtonPressed);
+        bot.setWhilee(middleButtonNotPressed);
+        bot.setKeepAlive(true);
+
+        bot.runScript(
                 new Script()
-                        .startWhen(middleButtonPressed)
-                        .whilee(middleButtonNotPressed)
                         .rightClick(1000)
-                        .keepAlive()
         );
     }
 }

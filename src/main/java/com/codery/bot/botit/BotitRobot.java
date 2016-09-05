@@ -24,6 +24,12 @@ public class BotitRobot {
     private final ExecutorService executor;
     private boolean terminated = false;
 
+    private boolean keepAlive;
+    private boolean forever;
+    private int times;
+    private BiPredicate<Integer, Integer> startWhen;
+    private BiPredicate<Integer, Integer> whilee;
+
     protected BotitRobot(Robot r, ExecutorService executor) {
         this.robot = r;
         this.executor = executor;
@@ -40,6 +46,26 @@ public class BotitRobot {
         } catch (AWTException e) {
             throw new BotitException("An error occurred trying to instantiate Robot", e);
         }
+    }
+
+    public void setKeepAlive(boolean keepAlive) {
+        this.keepAlive = keepAlive;
+    }
+
+    public void setForever(boolean forever) {
+        this.forever = forever;
+    }
+
+    public void setTimes(int times) {
+        this.times = times;
+    }
+
+    public void setStartWhen(BiPredicate<Integer, Integer> startWhen) {
+        this.startWhen = startWhen;
+    }
+
+    public void setWhilee(BiPredicate<Integer, Integer> whilee) {
+        this.whilee = whilee;
     }
 
     /**
@@ -91,15 +117,6 @@ public class BotitRobot {
         }
     }
 
-    private void setJNativeHookLogLevelToWarning() {
-        // Get the logger for "org.jnativehook" and set the level to warning.
-        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
-        logger.setLevel(Level.WARNING);
-
-        // Don't forget to disable the parent handlers.
-        logger.setUseParentHandlers(false);
-    }
-
     /**
      * Starts the script's execution.
      *
@@ -107,14 +124,14 @@ public class BotitRobot {
      */
     public void runScript(Script scr) {
         setJNativeHookLogLevelToWarning();
-        if (scr.isForever()) {
+        if (forever) {
             while (true) {
                 executeScriptActions(scr);
             }
         } else {
-            boolean hasTimes = scr.getTimes() > 0;
-            boolean hasWhile = scr.getWhilee() != null;
-            boolean hasConditionalStart = scr.getStartWhen() != null;
+            boolean hasTimes = times > 0;
+            boolean hasWhile = whilee != null;
+            boolean hasConditionalStart = startWhen != null;
 
             GlobalEventListener.whileListeningForMouseAndKeyEventsDo((mouseListener, keyListener) -> {
                 final Integer[] capturedMouseEvtBuffer = {NO_EVENT_CODE};
@@ -126,27 +143,27 @@ public class BotitRobot {
 
                 while (true) {
                     if (hasConditionalStart) {
-                        awaitStartCondition(scr.getStartWhen(), capturedMouseEvtBuffer, capturedKeyEvtBuffer);
+                        awaitStartCondition(startWhen, capturedMouseEvtBuffer, capturedKeyEvtBuffer);
                     }
 
                     terminated = false;
                     if (hasTimes && hasWhile) {
-                        for (int i = 0; i < scr.getTimes() || scr.getWhilee().test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0]); i++) {
+                        for (int i = 0; i < times || whilee.test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0]); i++) {
                             executeScriptActions(scr);
                         }
                     } else if (hasTimes) {
-                        for (int i = 0; i < scr.getTimes(); i++) {
+                        for (int i = 0; i < times; i++) {
                             executeScriptActions(scr);
                         }
                     } else if (hasWhile) {
-                        while (scr.getWhilee().test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0])) {
+                        while (whilee.test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0])) {
                             executeScriptActions(scr);
                         }
                     }
 
                     capturedMouseEvtBuffer[0] = NO_EVENT_CODE; //reset last mouse event
                     terminated = true;
-                    if (scr.isKeepAlive()) {
+                    if (keepAlive) {
                         sleep(50);
                     } else {
                         break;
@@ -154,6 +171,15 @@ public class BotitRobot {
                 }
             });
         }
+    }
+
+    private void setJNativeHookLogLevelToWarning() {
+        // Get the logger for "org.jnativehook" and set the level to warning.
+        Logger logger = Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        logger.setLevel(Level.WARNING);
+
+        // Don't forget to disable the parent handlers.
+        logger.setUseParentHandlers(false);
     }
 
     /**
