@@ -1,5 +1,9 @@
 package com.codery.botit;
 
+import com.codery.bot.botit.BotitRobot;
+import com.codery.bot.botit.EventTypes;
+import com.codery.bot.botit.Measure;
+import com.codery.bot.botit.Script;
 import org.junit.Test;
 
 import java.util.function.BiPredicate;
@@ -16,12 +20,17 @@ public class UsageTest {
         BiPredicate<Integer, Integer> middleButtonNotPressed = (mouseEvent, keyEvent) -> mouseEvent != MOUSE_BTN_MIDDLE;
         BiPredicate<Integer, Integer> middleButtonPressed = (mouseEvent, keyEvent) -> mouseEvent == MOUSE_BTN_MIDDLE;
 
-//        BotitRobot.newInstance().exec(
-//                new Script()
-//                        .pressKey(4)
-//                        .leftClick(100)
-//                        .thenAfter(EventTypes._4, Measure.TIMES(11), new Script().pressKey(10))
-//        );
+        BotitRobot bot = BotitRobot.newInstance();
+        bot.setStartWhen(middleButtonPressed);
+        bot.setWhilee(middleButtonNotPressed);
+        bot.setKeepAlive(true);
+
+        bot.runScript(
+                new Script()
+                        .rightClick(1000)
+                        .thenAfter(EventTypes.RIGHT_CLICK, 3, Measure.TIMES,
+                                new Script().pressKey(EventTypes._4, 1000))
+        );
     }
 
 }

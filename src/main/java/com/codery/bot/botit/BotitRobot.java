@@ -208,6 +208,11 @@ public class BotitRobot {
                 executor.execute(() -> act.execute(this, eventLog));
             }
         });
+        scr.getAfterScripts().forEach((constraint, script) -> {
+            if (eventLog.checkConstraint(constraint)) {
+                executeScriptActions(script);
+            }
+        });
     }
 
     public static void sleep(long millis) {

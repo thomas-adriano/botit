@@ -14,7 +14,8 @@ public interface Action {
     /**
      * Iniitates this action execution logic.
      *
-     * @param robot {@link BotitRobot} instance in wich the effective action will be called
+     * @param robot  {@link BotitRobot} instance in wich the effective action will be called
+     * @param evtLog event logging mechanism
      */
     void execute(BotitRobot robot, EventLog evtLog);
 
