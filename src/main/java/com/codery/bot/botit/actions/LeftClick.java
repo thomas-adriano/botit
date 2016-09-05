@@ -15,11 +15,17 @@ public class LeftClick extends Click {
 
     @Override
     public void doExecute(BotitRobot robot) {
+        LOGGER.debug("executing action " + toString());
         robot.leftClick(interval);
     }
 
     @Override
     public EventTypes getEventType() {
         return EventTypes.LEFT_CLICK;
+    }
+
+    @Override
+    public String toString() {
+        return "LeftClick{}";
     }
 }

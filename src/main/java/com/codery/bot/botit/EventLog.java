@@ -38,6 +38,7 @@ public class EventLog {
         //if constraint was fulfilled, remove the fulfilled event from the event log
         //like a 'reset' behavior
         if (ret) {
+            LOGGER.debug("Constraint "+c+" fulfilled.");
             events.remove(c.getEvt());
         }
         return ret;

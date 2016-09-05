@@ -216,7 +216,8 @@ public class BotitRobot {
      */
     private void executeScriptActions(Script scr) {
         scr.getActions().forEach(act -> {
-            if (act.terminated()) {
+            Future<?> future = actionsResult.get(act);
+            if (future == null || future.isDone()) {
                 Future<?> f = executor.submit(() -> act.execute(this, eventLog));
                 actionsResult.put(act, f);
 

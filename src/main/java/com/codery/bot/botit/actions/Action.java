@@ -19,11 +19,4 @@ public interface Action {
      */
     void execute(BotitRobot robot, EventLog evtLog);
 
-    /**
-     * Signals this action's termination status.
-     *
-     * @return true if terminated, false otherwise
-     */
-    boolean terminated();
-
 }

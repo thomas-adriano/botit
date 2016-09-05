@@ -14,11 +14,17 @@ public class RightClick extends Click {
 
     @Override
     public void doExecute(BotitRobot robot) {
+        LOGGER.debug("executing action " + toString());
         robot.rightClick(interval);
     }
 
     @Override
     public EventTypes getEventType() {
         return EventTypes.RIGHT_CLICK;
+    }
+
+    @Override
+    public String toString() {
+        return "RightClick{}";
     }
 }

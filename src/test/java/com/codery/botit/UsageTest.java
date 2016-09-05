@@ -29,6 +29,7 @@ public class UsageTest {
         bot.runScript(
                 new Script()
                         .pressKey(EventTypes._0, 250)
+                        .pressKey(EventTypes._2, 1000)
                         .thenAfter(EventTypes._0, 3, Measure.TIMES,
                                 new Script().pressKey(EventTypes._1))
         );

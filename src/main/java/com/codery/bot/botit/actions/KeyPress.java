@@ -2,9 +2,12 @@ package com.codery.bot.botit.actions;
 
 import com.codery.bot.botit.BotitRobot;
 import com.codery.bot.botit.EventTypes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KeyPress extends AbstractAction {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(KeyPress.class);
     private final int code;
     private final int interval;
 
@@ -19,6 +22,7 @@ public class KeyPress extends AbstractAction {
 
     @Override
     public void doExecute(BotitRobot robot) {
+        LOGGER.debug("executing action " + toString());
         robot.pressKey(code, interval);
     }
 
