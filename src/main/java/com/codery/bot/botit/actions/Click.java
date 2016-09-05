@@ -14,5 +14,4 @@ public abstract class Click extends AbstractAction {
         }
         this.interval = interval;
     }
-
 }

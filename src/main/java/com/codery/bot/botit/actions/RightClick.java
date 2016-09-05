@@ -1,6 +1,7 @@
 package com.codery.bot.botit.actions;
 
 import com.codery.bot.botit.BotitRobot;
+import com.codery.bot.botit.EventTypes;
 
 public class RightClick extends Click {
     public RightClick() {
@@ -16,4 +17,8 @@ public class RightClick extends Click {
         robot.rightClick(interval);
     }
 
+    @Override
+    public EventTypes getEventType() {
+        return EventTypes.RIGHT_CLICK;
+    }
 }

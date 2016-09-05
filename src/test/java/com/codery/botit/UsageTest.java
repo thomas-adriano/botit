@@ -1,8 +1,5 @@
 package com.codery.botit;
 
-import com.codery.bot.botit.Actions;
-import com.codery.bot.botit.BotitRobot;
-import com.codery.bot.botit.Script;
 import org.junit.Test;
 
 import java.util.function.BiPredicate;
@@ -23,7 +20,7 @@ public class UsageTest {
 //                new Script()
 //                        .pressKey(4)
 //                        .leftClick(100)
-//                        .thenAfter(Actions._4, Measure.TIMES(11), new Script().pressKey(10))
+//                        .thenAfter(EventTypes._4, Measure.TIMES(11), new Script().pressKey(10))
 //        );
     }
 

@@ -20,6 +20,7 @@ public class BotitRobot {
      * A number representing the absence of a event (mouse/keyboard) code
      */
     public static final int NO_EVENT_CODE = -9999;
+    private final EventLog eventLog;
     private final Robot robot;
     private final ExecutorService executor;
     private boolean terminated = false;
@@ -30,19 +31,15 @@ public class BotitRobot {
     private BiPredicate<Integer, Integer> startWhen;
     private BiPredicate<Integer, Integer> whilee;
 
-    protected BotitRobot(Robot r, ExecutorService executor) {
+    protected BotitRobot(Robot r, ExecutorService executor, EventLog eventLog) {
         this.robot = r;
         this.executor = executor;
+        this.eventLog = eventLog;
     }
 
-    /**
-     * Creates a new {@link #BotitRobot(Robot, ExecutorService)} instance.
-     *
-     * @return new {@link #BotitRobot(Robot, ExecutorService)} instance
-     */
     public static BotitRobot newInstance() {
         try {
-            return new BotitRobot(new Robot(), Executors.newCachedThreadPool());
+            return new BotitRobot(new Robot(), Executors.newCachedThreadPool(), new EventLog());
         } catch (AWTException e) {
             throw new BotitException("An error occurred trying to instantiate Robot", e);
         }
@@ -208,7 +205,7 @@ public class BotitRobot {
     private void executeScriptActions(Script scr) {
         scr.getActions().forEach(act -> {
             if (act.terminated()) {
-                executor.execute(() -> act.execute(this));
+                executor.execute(() -> act.execute(this, eventLog));
             }
         });
     }

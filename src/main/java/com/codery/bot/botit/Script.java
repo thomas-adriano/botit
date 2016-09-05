@@ -5,6 +5,7 @@ import com.codery.bot.botit.actions.KeyPress;
 import com.codery.bot.botit.actions.LeftClick;
 import com.codery.bot.botit.actions.RightClick;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiPredicate;
@@ -24,12 +25,12 @@ public class Script {
         this.actions = actions;
     }
 
-    public Script pressKey(int code) {
-        return this.pressKey(code, 0);
+    public Script pressKey(EventTypes evt) {
+        return this.pressKey(evt, 0);
     }
 
-    public Script pressKey(int code, int interval) {
-        return newAction(new KeyPress(code, interval));
+    public Script pressKey(EventTypes evt, int interval) {
+        return newAction(new KeyPress(Integer.valueOf(evt.value()), interval));
     }
 
     public Script rightClick() {

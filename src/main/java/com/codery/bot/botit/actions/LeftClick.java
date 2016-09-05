@@ -1,6 +1,7 @@
 package com.codery.bot.botit.actions;
 
 import com.codery.bot.botit.BotitRobot;
+import com.codery.bot.botit.EventTypes;
 
 public class LeftClick extends Click {
     public LeftClick() {
@@ -17,4 +18,8 @@ public class LeftClick extends Click {
         robot.leftClick(interval);
     }
 
+    @Override
+    public EventTypes getEventType() {
+        return EventTypes.LEFT_CLICK;
+    }
 }

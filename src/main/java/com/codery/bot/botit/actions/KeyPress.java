@@ -1,6 +1,7 @@
 package com.codery.bot.botit.actions;
 
 import com.codery.bot.botit.BotitRobot;
+import com.codery.bot.botit.EventTypes;
 
 public class KeyPress extends AbstractAction {
 
@@ -21,4 +22,16 @@ public class KeyPress extends AbstractAction {
         robot.pressKey(code, interval);
     }
 
+    @Override
+    public String toString() {
+        return "KeyPress{" +
+                "code=" + code +
+                ", interval=" + interval +
+                '}';
+    }
+
+    @Override
+    public EventTypes getEventType() {
+        return EventTypes.fromString(String.valueOf(code));
+    }
 }
