@@ -1,14 +1,11 @@
 package com.codery.bot.botit;
 
-import com.codery.bot.botit.actions.Action;
 import com.codery.bot.botit.nativeevents.GlobalEventListener;
 import org.jnativehook.GlobalScreen;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -26,7 +23,6 @@ public class BotitRobot {
      */
     public static final int NO_EVENT_CODE = -9999;
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BotitRobot.class);
-    private final Map<Action, Future<?>> actionsResult = new HashMap<>();
     private final EventLog eventLog;
     private final Robot robot;
     private final ExecutorService executor;
@@ -74,50 +70,39 @@ public class BotitRobot {
 
     /**
      * Press the right mouse button
-     *
-     * @param interval interval to be given at each pressing
      */
-    public void rightClick(int interval) {
+    public void rightClick() {
         if (!terminated) {
-            interval = interval - 200; /*click interval sum*/
             robot.mousePress(InputEvent.BUTTON3_MASK);
             robot.delay(100);
             robot.mouseRelease(InputEvent.BUTTON3_MASK);
             robot.delay(100);
-            robot.delay(interval > 0 ? interval : 0);
         }
     }
 
     /**
      * Press the left mouse button
-     *
-     * @param interval interval to be given at each pressing
      */
-    public void leftClick(int interval) {
+    public void leftClick() {
         if (!terminated) {
-            interval = interval - 200; /*click interval sum*/
             robot.mousePress(InputEvent.BUTTON1_MASK);
             robot.delay(100);
             robot.mouseRelease(InputEvent.BUTTON1_MASK);
             robot.delay(100);
-            robot.delay(interval > 0 ? interval : 0);
         }
     }
 
     /**
      * Press a key in an interval.
      *
-     * @param code     key code to be pressed
-     * @param interval interval to be given at each pressing
+     * @param code key code to be pressed
      */
-    public void pressKey(int code, int interval) {
+    public void pressKey(int code) {
         if (!terminated) {
-            interval = interval - 200; /*press interval sum*/
             robot.keyPress(code);
             robot.delay(100);
             robot.keyRelease(code);
             robot.delay(100);
-            robot.delay(interval > 0 ? interval : 0);
         }
     }
 
@@ -216,11 +201,8 @@ public class BotitRobot {
      */
     private void executeScriptActions(Script scr) {
         scr.getActions().forEach(act -> {
-            Future<?> future = actionsResult.get(act);
-            if (future == null || future.isDone()) {
-                Future<?> f = executor.submit(() -> act.execute(this, eventLog));
-                actionsResult.put(act, f);
-
+            if (act.readyToExecute()) {
+                executor.execute(() -> act.execute(this, eventLog));
                 scr.getAfterScripts().forEach((constraint, script) -> {
                     if (eventLog.checkConstraint(constraint)) {
                         executeScriptActions(script);

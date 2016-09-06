@@ -14,12 +14,14 @@ import java.util.function.BiPredicate;
  */
 public class UsageTest {
 
+    private static final int MOUSE_BTN_RIGHT = 1;
     private static final int MOUSE_BTN_MIDDLE = 3;
+    private static final int MOUSE_BTN_LEFT = 2;
 
     @Test
     public void usageTest_1() {
-        BiPredicate<Integer, Integer> middleButtonNotPressed = (mouseEvent, keyEvent) -> mouseEvent != MOUSE_BTN_MIDDLE;
-        BiPredicate<Integer, Integer> middleButtonPressed = (mouseEvent, keyEvent) -> mouseEvent == MOUSE_BTN_MIDDLE;
+        BiPredicate<Integer, Integer> middleButtonNotPressed = (mouseEvent, keyEvent) -> mouseEvent != MOUSE_BTN_LEFT;
+        BiPredicate<Integer, Integer> middleButtonPressed = (mouseEvent, keyEvent) -> mouseEvent == MOUSE_BTN_LEFT;
 
         BotitRobot bot = BotitRobot.newInstance();
         bot.setStartWhen(middleButtonPressed);
@@ -29,9 +31,9 @@ public class UsageTest {
         bot.runScript(
                 new Script()
                         .pressKey(EventTypes._0, 250)
-                        .pressKey(EventTypes._2, 1000)
-                        .thenAfter(EventTypes._0, 3, Measure.TIMES,
-                                new Script().pressKey(EventTypes._1))
+                        .pressKey(EventTypes._1, 1000)
+                        .thenAfter(EventTypes._1, 3, Measure.TIMES,
+                                new Script().pressKey(EventTypes._2))
         );
     }
 

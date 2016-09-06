@@ -19,4 +19,6 @@ public interface Action {
      */
     void execute(BotitRobot robot, EventLog evtLog);
 
+    boolean readyToExecute();
+
 }

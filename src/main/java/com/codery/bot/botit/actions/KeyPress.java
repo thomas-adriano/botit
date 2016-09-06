@@ -9,7 +9,6 @@ public class KeyPress extends AbstractAction {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(KeyPress.class);
     private final int code;
-    private final int interval;
 
     public KeyPress(int code) {
         this(code, 50);
@@ -23,7 +22,7 @@ public class KeyPress extends AbstractAction {
     @Override
     public void doExecute(BotitRobot robot) {
         LOGGER.debug("executing action " + toString());
-        robot.pressKey(code, interval);
+        robot.pressKey(code);
     }
 
     @Override
