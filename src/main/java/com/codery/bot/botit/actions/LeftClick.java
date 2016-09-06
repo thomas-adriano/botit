@@ -16,7 +16,7 @@ public class LeftClick extends Click {
     @Override
     public void doExecute(BotitRobot robot) {
         LOGGER.debug("executing action " + toString());
-        robot.leftClick();
+        robot.leftClick(interval);
     }
 
     @Override

@@ -15,14 +15,14 @@ public class KeyPress extends AbstractAction {
     }
 
     public KeyPress(int code, int interval) {
+        super(interval);
         this.code = code;
-        this.interval = interval;
     }
 
     @Override
     public void doExecute(BotitRobot robot) {
         LOGGER.debug("executing action " + toString());
-        robot.pressKey(code);
+        robot.pressKey(code, interval);
     }
 
     @Override

@@ -12,9 +12,6 @@ public abstract class Click extends AbstractAction {
     }
 
     public Click(int interval) {
-        if (interval < 50) {
-            interval = 50;
-        }
-        this.interval = interval;
+        super(interval);
     }
 }

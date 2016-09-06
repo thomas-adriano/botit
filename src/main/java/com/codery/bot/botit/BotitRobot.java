@@ -8,7 +8,6 @@ import java.awt.*;
 import java.awt.event.InputEvent;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.function.BiPredicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,70 +24,58 @@ public class BotitRobot {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BotitRobot.class);
     private final EventLog eventLog;
     private final Robot robot;
+    private boolean started;
     private final ExecutorService executor;
-    private boolean terminated = false;
 
-    private boolean keepAlive;
-    private boolean forever;
-    private int times;
-    private BiPredicate<Integer, Integer> startWhen;
-    private BiPredicate<Integer, Integer> whilee;
+    private BiPredicate<Integer, Integer> toggleCondition;
 
-    protected BotitRobot(Robot r, ExecutorService executor, EventLog eventLog) {
+    protected BotitRobot(Robot r, EventLog eventLog, ExecutorService executor) {
         this.robot = r;
-        this.executor = executor;
         this.eventLog = eventLog;
+        this.executor = executor;
     }
 
     public static BotitRobot newInstance() {
         try {
-            return new BotitRobot(new Robot(), Executors.newCachedThreadPool(), new EventLog());
+            return new BotitRobot(new Robot(), new EventLog(), Executors.newSingleThreadExecutor());
         } catch (AWTException e) {
             throw new BotitException("An error occurred trying to instantiate Robot", e);
         }
     }
 
-    public void setKeepAlive(boolean keepAlive) {
-        this.keepAlive = keepAlive;
-    }
-
-    public void setForever(boolean forever) {
-        this.forever = forever;
-    }
-
-    public void setTimes(int times) {
-        this.times = times;
-    }
-
-    public void setStartWhen(BiPredicate<Integer, Integer> startWhen) {
-        this.startWhen = startWhen;
-    }
-
-    public void setWhilee(BiPredicate<Integer, Integer> whilee) {
-        this.whilee = whilee;
+    public void setToggleCondition(BiPredicate<Integer, Integer> toggleCondition) {
+        this.toggleCondition = toggleCondition;
     }
 
     /**
      * Press the right mouse button
      */
-    public void rightClick() {
-        if (!terminated) {
+    public void rightClick(int interval) {
+        if (started) {
+            interval -= 200;
             robot.mousePress(InputEvent.BUTTON3_MASK);
             robot.delay(100);
             robot.mouseRelease(InputEvent.BUTTON3_MASK);
             robot.delay(100);
+            if (interval > 0) {
+                robot.delay(interval);
+            }
         }
     }
 
     /**
      * Press the left mouse button
      */
-    public void leftClick() {
-        if (!terminated) {
+    public void leftClick(int interval) {
+        if (started) {
+            interval -= 200;
             robot.mousePress(InputEvent.BUTTON1_MASK);
             robot.delay(100);
             robot.mouseRelease(InputEvent.BUTTON1_MASK);
             robot.delay(100);
+            if (interval > 0) {
+                robot.delay(interval);
+            }
         }
     }
 
@@ -97,12 +84,16 @@ public class BotitRobot {
      *
      * @param code key code to be pressed
      */
-    public void pressKey(int code) {
-        if (!terminated) {
+    public void pressKey(int code, int interval) {
+        if (started) {
+            interval -= 200;
             robot.keyPress(code);
             robot.delay(100);
             robot.keyRelease(code);
             robot.delay(100);
+            if (interval > 0) {
+                robot.delay(interval);
+            }
         }
     }
 
@@ -114,56 +105,29 @@ public class BotitRobot {
     public void runScript(Script scr) {
         LOGGER.info("Starting bot execution...");
         setJNativeHookLogLevelToWarning();
-        if (forever) {
+
+        GlobalEventListener.whileListeningForMouseAndKeyEventsDo((mouseListener, keyListener) -> {
+            final Integer[] capturedMouseEvtBuffer = {NO_EVENT_CODE};
+            final Integer[] capturedKeyEvtBuffer = {NO_EVENT_CODE};
+            mouseListener.onMouseReleased(evt -> capturedMouseEvtBuffer[0] = evt.getButton());
+            keyListener.onKeyReleased(evt -> capturedKeyEvtBuffer[0] = evt.getRawCode());
+            mouseListener.start();
+            keyListener.start();
+
+            listenForStartCondition(toggleCondition, capturedMouseEvtBuffer, capturedKeyEvtBuffer);
+
             while (true) {
+                awaitForStartCondition();
                 executeScriptActions(scr);
-                sleep(50);
             }
-        } else {
-            boolean hasTimes = times > 0;
-            boolean hasWhile = whilee != null;
-            boolean hasConditionalStart = startWhen != null;
+        });
 
-            GlobalEventListener.whileListeningForMouseAndKeyEventsDo((mouseListener, keyListener) -> {
-                final Integer[] capturedMouseEvtBuffer = {NO_EVENT_CODE};
-                final Integer[] capturedKeyEvtBuffer = {NO_EVENT_CODE};
-                mouseListener.onMouseReleased(evt -> capturedMouseEvtBuffer[0] = evt.getButton());
-                keyListener.onKeyReleased(evt -> capturedKeyEvtBuffer[0] = evt.getRawCode());
-                mouseListener.start();
-                keyListener.start();
+    }
 
-                while (true) {
-                    if (hasConditionalStart) {
-                        awaitStartCondition(startWhen, capturedMouseEvtBuffer, capturedKeyEvtBuffer);
-                    }
-
-                    terminated = false;
-                    if (hasTimes && hasWhile) {
-                        for (int i = 0; i < times || whilee.test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0]); i++) {
-                            executeScriptActions(scr);
-                            sleep(50);
-                        }
-                    } else if (hasTimes) {
-                        for (int i = 0; i < times; i++) {
-                            executeScriptActions(scr);
-                            sleep(50);
-                        }
-                    } else if (hasWhile) {
-                        while (whilee.test(capturedMouseEvtBuffer[0], capturedKeyEvtBuffer[0])) {
-                            executeScriptActions(scr);
-                            sleep(50);
-                        }
-                    }
-
-                    capturedMouseEvtBuffer[0] = NO_EVENT_CODE; //reset last mouse event
-                    terminated = true;
-                    if (keepAlive) {
-                        sleep(50);
-                    } else {
-                        break;
-                    }
-                }
-            });
+    private void awaitForStartCondition() {
+        LOGGER.debug("Awating for start condition to be met...");
+        while (!started) {
+            sleep(50);
         }
     }
 
@@ -185,13 +149,19 @@ public class BotitRobot {
      * @param mouseEvtBuffer  mouse events buffer
      * @param keyEvtBuffer    keyboard events buffer
      */
-    private void awaitStartCondition(BiPredicate<Integer, Integer> startCondidtion, Integer[] mouseEvtBuffer, Integer[] keyEvtBuffer) {
-        boolean startConditionMet = startCondidtion.test(mouseEvtBuffer[0], keyEvtBuffer[0]);
-        while (!startConditionMet) {
-            sleep(50);
-            startConditionMet = startCondidtion.test(mouseEvtBuffer[0], keyEvtBuffer[0]);
-        }
-        mouseEvtBuffer[0] = NO_EVENT_CODE; //reset last mouse event
+    private void listenForStartCondition(BiPredicate<Integer, Integer> startCondidtion, Integer[] mouseEvtBuffer, Integer[] keyEvtBuffer) {
+        executor.execute(() -> {
+            while (true) {
+                LOGGER.debug("Verifying start condition: " + started);
+                boolean startConditionMet = startCondidtion.test(mouseEvtBuffer[0], keyEvtBuffer[0]);
+                if (startConditionMet) {
+                    started = !started;
+                    mouseEvtBuffer[0] = NO_EVENT_CODE;
+                    keyEvtBuffer[0] = NO_EVENT_CODE;
+                }
+                sleep(50);
+            }
+        });
     }
 
     /**
@@ -201,14 +171,14 @@ public class BotitRobot {
      */
     private void executeScriptActions(Script scr) {
         scr.getActions().forEach(act -> {
-            if (act.readyToExecute()) {
-                executor.execute(() -> act.execute(this, eventLog));
-                scr.getAfterScripts().forEach((constraint, script) -> {
-                    if (eventLog.checkConstraint(constraint)) {
-                        executeScriptActions(script);
-                    }
-                });
-            }
+            act.execute(this);
+            eventLog.logEvent(act.getEventType());
+
+            scr.getAfterScripts().forEach((constraint, script) -> {
+                if (eventLog.checkConstraint(constraint)) {
+                    executeScriptActions(script);
+                }
+            });
         });
     }
 

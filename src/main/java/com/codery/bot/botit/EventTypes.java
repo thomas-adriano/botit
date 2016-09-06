@@ -7,6 +7,7 @@ public enum EventTypes {
     LEFT_CLICK("L_CLICK", 1), //
     RIGHT_CLICK("R_CLICK", 2), //
     MIDDLE_CLICK("M_CLICK", 3), //
+    CAST("CAST", 3),//
     F1("F1", KeyEvent.VK_F1), //
     F2("F2", KeyEvent.VK_F2),//
     F3("F3", KeyEvent.VK_F3), //

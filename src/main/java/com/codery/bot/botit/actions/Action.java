@@ -1,7 +1,6 @@
 package com.codery.bot.botit.actions;
 
 import com.codery.bot.botit.BotitRobot;
-import com.codery.bot.botit.EventLog;
 import com.codery.bot.botit.EventTypes;
 
 /**
@@ -14,11 +13,8 @@ public interface Action {
     /**
      * Iniitates this action execution logic.
      *
-     * @param robot  {@link BotitRobot} instance in wich the effective action will be called
-     * @param evtLog event logging mechanism
+     * @param robot {@link BotitRobot} instance in wich the effective action will be called
      */
-    void execute(BotitRobot robot, EventLog evtLog);
-
-    boolean readyToExecute();
+    void execute(BotitRobot robot);
 
 }

@@ -1,12 +1,12 @@
 package com.codery.bot.botit.executions;
 
 import com.codery.bot.botit.BotitRobot;
-import static com.codery.bot.botit.EventTypes.*;
-
-import static com.codery.bot.botit.Measure.*;
 import com.codery.bot.botit.Script;
 
 import java.util.function.BiPredicate;
+
+import static com.codery.bot.botit.EventTypes.*;
+import static com.codery.bot.botit.Measure.TIMES;
 
 /**
  * Created by thomasadriano on 9/5/16.
@@ -14,13 +14,10 @@ import java.util.function.BiPredicate;
 public class MysteryDesertExecution {
 
     public static void main(String[] args) {
-        BiPredicate<Integer, Integer> middleButtonNotPressed = (mouseEvent, keyEvent) -> mouseEvent != MIDDLE_CLICK.getEventCode();
         BiPredicate<Integer, Integer> middleButtonPressed = (mouseEvent, keyEvent) -> mouseEvent == MIDDLE_CLICK.getEventCode();
 
         BotitRobot bot = BotitRobot.newInstance();
-        bot.setStartWhen(middleButtonPressed);
-        bot.setWhilee(middleButtonNotPressed);
-        bot.setKeepAlive(true);
+        bot.setToggleCondition(middleButtonPressed);
 
         bot.runScript(
                 new Script()

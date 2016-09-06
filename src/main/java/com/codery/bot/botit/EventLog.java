@@ -25,22 +25,16 @@ public class EventLog {
         LOGGER.debug("Logging event " + evt + " with quantity: " + quantity);
     }
 
-    public boolean checkConstraint(Constraint c) {
-        LOGGER.debug("Checking constraint: \"" + c + "\"");
+    public boolean checkConstraint(Constraint constr) {
+        LOGGER.debug("Checking constraint: \"" + constr + "\"");
         boolean ret = false;
-        for (Map.Entry<EventTypes, Integer> e : events.entrySet()) {
-            if (e.getKey() == c.getEvt() && e.getValue() >= c.getQuantity()) {
+        for (Map.Entry<EventTypes, Integer> event : events.entrySet()) {
+            if (event.getKey() == constr.getEvt() && (event.getValue() % constr.getQuantity() == 0)) {
                 ret = true;
                 break;
             }
         }
 
-        //if constraint was fulfilled, remove the fulfilled event from the event log
-        //like a 'reset' behavior
-        if (ret) {
-            LOGGER.debug("Constraint "+c+" fulfilled.");
-            events.remove(c.getEvt());
-        }
         return ret;
     }
 

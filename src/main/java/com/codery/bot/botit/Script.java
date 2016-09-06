@@ -1,9 +1,6 @@
 package com.codery.bot.botit;
 
-import com.codery.bot.botit.actions.Action;
-import com.codery.bot.botit.actions.KeyPress;
-import com.codery.bot.botit.actions.LeftClick;
-import com.codery.bot.botit.actions.RightClick;
+import com.codery.bot.botit.actions.*;
 
 import java.util.*;
 
@@ -31,6 +28,10 @@ public class Script {
 
     public Script pressKey(EventTypes evt, int interval) {
         return newAction(new KeyPress(evt.getEventCode(), interval));
+    }
+
+    public Script cast(EventTypes evt, int interval) {
+        return newAction(new Cast(evt.getEventCode(), interval));
     }
 
     public Script rightClick() {
