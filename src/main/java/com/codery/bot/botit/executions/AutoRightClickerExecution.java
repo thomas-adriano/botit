@@ -27,7 +27,7 @@ public class AutoRightClickerExecution {
 
         bot.runScript(
                 new Script()
-                        .cast(_4, 1000)
+                        .cast(_4, 2000)
         );
     }
 }

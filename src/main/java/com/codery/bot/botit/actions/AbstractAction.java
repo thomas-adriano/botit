@@ -1,6 +1,7 @@
 package com.codery.bot.botit.actions;
 
 import com.codery.bot.botit.BotitRobot;
+import com.codery.bot.botit.EventLog;
 
 /**
  * Centralizes common {@link Action} logic
@@ -16,10 +17,13 @@ public abstract class AbstractAction implements Action {
         this.interval = interval;
     }
 
-    public synchronized void execute(BotitRobot robot) {
-        doExecute(robot);
+    public synchronized void execute(BotitRobot robot, EventLog evtLog) {
+        boolean executed = doExecute(robot);
+        if (executed) {
+            evtLog.logEvent(getFingerprint());
+        }
     }
 
-    protected abstract void doExecute(BotitRobot robot);
+    protected abstract boolean doExecute(BotitRobot robot);
 
 }

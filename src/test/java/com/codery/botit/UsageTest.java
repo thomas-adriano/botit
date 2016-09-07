@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.util.function.BiPredicate;
 
-import static com.codery.bot.botit.Measure.TIMES;
+import static com.codery.bot.botit.MeasureUnit.TIMES;
 import static com.codery.bot.botit.actions.ActionTypes.CAST;
 import static com.codery.bot.botit.actions.EventKeys.*;
 
@@ -22,20 +22,22 @@ public class UsageTest {
 
     @Test
     public void usageTest_1() {
-        BiPredicate<Integer, Integer> middleButtonPressed = (mouseEvent, keyEvent) -> mouseEvent == MOUSE_BTN_RIGHT;
+        BiPredicate<Integer, Integer> middleButtonPressed = (mouseEvent, keyEvent) -> mouseEvent == MOUSE_BTN_MIDDLE;
 
         BotitRobot bot = BotitRobot.newInstance();
         bot.setToggleCondition(middleButtonPressed);
 
         bot.runScript(
                 new Script()
-                        .buff(_5, 5000)
-                        .buff(_6, 10000)
-                        .cast(_4, 1000)
-                        .thenAfter(CAST, _4, 4, TIMES,
-                                new Script().cast(_1, 800))
-                        .thenAfter(CAST, _4, 8, TIMES,
-                                new Script().cast(_2, 800))
+                        .buff(F4, 300_000)
+                        .buff(F5, 300_000)
+                        .buff(F6, 300_000)
+                        .buff(F7, 300_000)
+                        .cast(_4, 2000)
+                        .thenAfter(CAST, _4, 11, TIMES,
+                                new Script().usePot(_1, 400))
+                        .thenAfter(CAST, _4, 26, TIMES,
+                                new Script().usePot(_3, 400))
         );
     }
 

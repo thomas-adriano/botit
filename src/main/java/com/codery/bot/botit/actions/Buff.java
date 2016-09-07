@@ -8,12 +8,14 @@ import com.codery.bot.botit.BotitRobot;
 public class Buff extends AbstractAction {
     private final int buff;
     private long execTime;
+    private final int castTime;
 
-    public Buff(int buff, int interval) {
-        super(interval);
+    public Buff(int buff, int schedule, int castTime) {
+        super(schedule);
         if (super.interval >= 200) {
             super.interval -= 200; //subtract pressKey inner delay if possible
         }
+        this.castTime = castTime;
         this.buff = buff;
     }
 
@@ -23,12 +25,14 @@ public class Buff extends AbstractAction {
     }
 
     @Override
-    protected void doExecute(BotitRobot robot) {
+    protected boolean doExecute(BotitRobot robot) {
         if (readyToExecute()) {
             execTime = System.currentTimeMillis();
-            robot.pressKey(buff, 800);
-            robot.rightClick(0);
+            robot.pressKey(buff, 250);
+            robot.rightClick(castTime);
+            return true;
         }
+        return false;
     }
 
     private boolean readyToExecute() {

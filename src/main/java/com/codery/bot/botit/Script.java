@@ -22,12 +22,20 @@ public class Script {
         this.afterScripts = afterScripts;
     }
 
-    public Script buff(EventKeys evt) {
-        return buff(evt, 0);
+    public Script usePot(EventKeys evt) {
+        return usePot(evt, 0);
     }
 
-    public Script buff(EventKeys evt, int interval) {
-        return newAction(new Buff(evt.getEventCode(), interval));
+    public Script usePot(EventKeys evt, int interval) {
+        return newAction(new UsePot(evt.getEventCode(), interval));
+    }
+
+    public Script buff(EventKeys evt, int schedule) {
+        return buff(evt, schedule, 0);
+    }
+
+    public Script buff(EventKeys evt, int schedule, int castTime) {
+        return newAction(new Buff(evt.getEventCode(), schedule, castTime));
     }
 
     public Script cast(EventKeys evt) {
@@ -47,12 +55,12 @@ public class Script {
         return new Script(newActions, this.afterScripts);
     }
 
-    public Script thenAfter(ActionTypes actType, EventKeys evt, int times, Measure measure, Script scr) {
+    public Script thenAfter(ActionTypes actType, EventKeys evt, Measure measure, Script scr) {
         Map<Constraint, Script> newAfterScripts = new HashMap<>();
         if (afterScripts != null) {
             newAfterScripts.putAll(afterScripts);
         }
-        Constraint c = new Constraint(new ActionFingerprint(evt, actType), times, measure);
+        Constraint c = new Constraint(new ActionFingerprint(evt, actType), measure.getQuantity(), measure.getMeasureUnit());
         newAfterScripts.put(c, scr);
         return new Script(this.actions, newAfterScripts);
     }

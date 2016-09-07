@@ -152,7 +152,6 @@ public class BotitRobot {
     private void listenForStartCondition(BiPredicate<Integer, Integer> startCondidtion, Integer[] mouseEvtBuffer, Integer[] keyEvtBuffer) {
         executor.execute(() -> {
             while (true) {
-                LOGGER.debug("Verifying start condition: " + started);
                 boolean startConditionMet = startCondidtion.test(mouseEvtBuffer[0], keyEvtBuffer[0]);
                 if (startConditionMet) {
                     started = !started;
@@ -171,14 +170,15 @@ public class BotitRobot {
      */
     private void executeScriptActions(Script scr) {
         scr.getActions().forEach(act -> {
-            act.execute(this);
-            eventLog.logEvent(act.getFingerprint());
-
-            scr.getAfterScripts().forEach((constraint, script) -> {
-                if (eventLog.checkConstraint(constraint)) {
-                    executeScriptActions(script);
-                }
-            });
+            act.execute(this, eventLog);
+        });
+        //FIXME: leaving the afterscripts execution after all script actions execution can causa bad behavior if the script
+        //contains a lot of actions with a lot of delay. e.g.: you'd expect the afteractions to execut right after some
+        //action but it will wait for all script (and delays..) to be executed first
+        scr.getAfterScripts().forEach((constraint, script) -> {
+            if (eventLog.checkConstraint(constraint)) {
+                executeScriptActions(script);
+            }
         });
     }
 

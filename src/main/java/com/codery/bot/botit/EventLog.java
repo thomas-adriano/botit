@@ -28,15 +28,14 @@ public class EventLog {
 
     public boolean checkConstraint(Constraint constr) {
         LOGGER.debug("Checking constraint: \"" + constr + "\"");
-        boolean ret = false;
         for (Map.Entry<ActionFingerprint, Integer> event : events.entrySet()) {
-            if (event.getKey() == constr.getActionFingerprint() && (event.getValue() % constr.getQuantity() == 0)) {
-                ret = true;
-                break;
+            if (event.getKey().equals(constr.getActionFingerprint()) && (event.getValue() % constr.getQuantity() == 0)) {
+                LOGGER.debug("Condition "+constr+" met!");
+                return true;
             }
         }
 
-        return ret;
+        return false;
     }
 
     public Integer getEventOccurrence(ActionFingerprint fp) {

@@ -23,8 +23,9 @@ public class Cast extends AbstractAction {
     }
 
     @Override
-    protected void doExecute(BotitRobot robot) {
+    protected boolean doExecute(BotitRobot robot) {
         robot.pressKey(spell, interval);
         robot.rightClick(0);
+        return true;
     }
 }

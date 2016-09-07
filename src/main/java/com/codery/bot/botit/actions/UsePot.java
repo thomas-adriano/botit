@@ -19,7 +19,8 @@ public class UsePot extends AbstractAction {
     }
 
     @Override
-    protected void doExecute(BotitRobot robot) {
+    protected boolean doExecute(BotitRobot robot) {
         robot.pressKey(pot, interval);
+        return true;
     }
 }

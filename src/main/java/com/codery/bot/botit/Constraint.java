@@ -9,12 +9,12 @@ public class Constraint {
 
     private final ActionFingerprint actionFingerprint;
     private final int quantity;
-    private final Measure measure;
+    private final MeasureUnit measureUnit;
 
-    public Constraint(ActionFingerprint actionFingerprint, int quantity, Measure measure) {
+    public Constraint(ActionFingerprint actionFingerprint, int quantity, MeasureUnit measureUnit) {
         this.actionFingerprint = actionFingerprint;
         this.quantity = quantity;
-        this.measure = measure;
+        this.measureUnit = measureUnit;
     }
 
     public ActionFingerprint getActionFingerprint() {
@@ -25,8 +25,8 @@ public class Constraint {
         return quantity;
     }
 
-    public Measure getMeasure() {
-        return measure;
+    public MeasureUnit getMeasureUnit() {
+        return measureUnit;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class Constraint {
         return "Constraint{" +
                 "actionFingerprint=" + actionFingerprint +
                 ", quantity=" + quantity +
-                ", measure=" + measure +
+                ", measureUnit=" + measureUnit +
                 '}';
     }
 
@@ -47,7 +47,7 @@ public class Constraint {
 
         if (quantity != that.quantity) return false;
         if (actionFingerprint != that.actionFingerprint) return false;
-        return measure == that.measure;
+        return measureUnit == that.measureUnit;
 
     }
 
@@ -55,7 +55,7 @@ public class Constraint {
     public int hashCode() {
         int result = actionFingerprint != null ? actionFingerprint.hashCode() : 0;
         result = 31 * result + quantity;
-        result = 31 * result + (measure != null ? measure.hashCode() : 0);
+        result = 31 * result + (measureUnit != null ? measureUnit.hashCode() : 0);
         return result;
     }
 }
