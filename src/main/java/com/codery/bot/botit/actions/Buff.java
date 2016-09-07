@@ -28,7 +28,7 @@ public class Buff extends AbstractAction {
     protected boolean doExecute(BotitRobot robot) {
         if (readyToExecute()) {
             execTime = System.currentTimeMillis();
-            robot.pressKey(buff, 250);
+            robot.pressKey(buff, 500);
             robot.rightClick(castTime);
             return true;
         }

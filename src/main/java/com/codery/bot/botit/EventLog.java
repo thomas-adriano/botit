@@ -4,18 +4,18 @@ import com.codery.bot.botit.actions.ActionFingerprint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by Thomas.Adriano on 05/09/2016.
  */
 public class EventLog {
 
-    private final Map<ActionFingerprint, Integer> events = new ConcurrentHashMap<>();
+    private final Map<ActionFingerprint, Integer> events = new HashMap<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLog.class);
 
-    public synchronized void logEvent(ActionFingerprint fp) {
+    public void logEvent(ActionFingerprint fp) {
         Integer quantity = events.get(fp);
         if (quantity == null) {
             quantity = 1;
@@ -36,11 +36,6 @@ public class EventLog {
         }
 
         return false;
-    }
-
-    public Integer getEventOccurrence(ActionFingerprint fp) {
-        Integer quantity = events.get(fp);
-        return quantity == null ? 0 : quantity;
     }
 
 }
