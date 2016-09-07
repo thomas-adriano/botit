@@ -172,7 +172,7 @@ public class BotitRobot {
     private void executeScriptActions(Script scr) {
         scr.getActions().forEach(act -> {
             act.execute(this);
-            eventLog.logEvent(act.getEventType());
+            eventLog.logEvent(act.getFingerprint());
 
             scr.getAfterScripts().forEach((constraint, script) -> {
                 if (eventLog.checkConstraint(constraint)) {

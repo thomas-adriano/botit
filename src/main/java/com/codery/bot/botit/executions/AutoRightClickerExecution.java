@@ -5,6 +5,8 @@ import com.codery.bot.botit.Script;
 
 import java.util.function.BiPredicate;
 
+import static com.codery.bot.botit.actions.EventKeys._4;
+
 /**
  * Simple auto clicker that:
  * <pre>
@@ -25,7 +27,7 @@ public class AutoRightClickerExecution {
 
         bot.runScript(
                 new Script()
-                        .rightClick(1000)
+                        .cast(_4, 1000)
         );
     }
 }

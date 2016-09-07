@@ -1,5 +1,6 @@
 package com.codery.bot.botit;
 
+import com.codery.bot.botit.actions.ActionFingerprint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,25 +12,25 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class EventLog {
 
-    private final Map<EventTypes, Integer> events = new ConcurrentHashMap<>();
+    private final Map<ActionFingerprint, Integer> events = new ConcurrentHashMap<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(EventLog.class);
 
-    public synchronized void logEvent(EventTypes evt) {
-        Integer quantity = events.get(evt);
+    public synchronized void logEvent(ActionFingerprint fp) {
+        Integer quantity = events.get(fp);
         if (quantity == null) {
             quantity = 1;
         } else {
             ++quantity;
         }
-        events.put(evt, quantity);
-        LOGGER.debug("Logging event " + evt + " with quantity: " + quantity);
+        events.put(fp, quantity);
+        LOGGER.debug("Logging event " + fp + " with quantity: " + quantity);
     }
 
     public boolean checkConstraint(Constraint constr) {
         LOGGER.debug("Checking constraint: \"" + constr + "\"");
         boolean ret = false;
-        for (Map.Entry<EventTypes, Integer> event : events.entrySet()) {
-            if (event.getKey() == constr.getEvt() && (event.getValue() % constr.getQuantity() == 0)) {
+        for (Map.Entry<ActionFingerprint, Integer> event : events.entrySet()) {
+            if (event.getKey() == constr.getActionFingerprint() && (event.getValue() % constr.getQuantity() == 0)) {
                 ret = true;
                 break;
             }
@@ -38,8 +39,8 @@ public class EventLog {
         return ret;
     }
 
-    public Integer getEventOccurrence(EventTypes evt) {
-        Integer quantity = events.get(evt);
+    public Integer getEventOccurrence(ActionFingerprint fp) {
+        Integer quantity = events.get(fp);
         return quantity == null ? 0 : quantity;
     }
 

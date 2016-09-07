@@ -1,12 +1,15 @@
 package com.codery.botit;
 
 import com.codery.bot.botit.BotitRobot;
-import com.codery.bot.botit.EventTypes;
-import com.codery.bot.botit.Measure;
 import com.codery.bot.botit.Script;
 import org.junit.Test;
 
 import java.util.function.BiPredicate;
+
+import static com.codery.bot.botit.Measure.TIMES;
+import static com.codery.bot.botit.actions.ActionTypes.CAST;
+import static com.codery.bot.botit.actions.EventKeys.*;
+
 
 /**
  * Created by thomas on 05/08/2016.
@@ -19,18 +22,20 @@ public class UsageTest {
 
     @Test
     public void usageTest_1() {
-        BiPredicate<Integer, Integer> middleButtonPressed = (mouseEvent, keyEvent) -> mouseEvent == MOUSE_BTN_MIDDLE;
+        BiPredicate<Integer, Integer> middleButtonPressed = (mouseEvent, keyEvent) -> mouseEvent == MOUSE_BTN_RIGHT;
 
         BotitRobot bot = BotitRobot.newInstance();
         bot.setToggleCondition(middleButtonPressed);
 
         bot.runScript(
                 new Script()
-                        .cast(EventTypes._4, 1000)
-                        .thenAfter(EventTypes.CAST, 4, Measure.TIMES,
-                                new Script().pressKey(EventTypes._1, 800))
-                        .thenAfter(EventTypes.CAST, 8, Measure.TIMES,
-                                new Script().pressKey(EventTypes._2, 800))
+                        .buff(_5, 5000)
+                        .buff(_6, 10000)
+                        .cast(_4, 1000)
+                        .thenAfter(CAST, _4, 4, TIMES,
+                                new Script().cast(_1, 800))
+                        .thenAfter(CAST, _4, 8, TIMES,
+                                new Script().cast(_2, 800))
         );
     }
 

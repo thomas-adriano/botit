@@ -1,7 +1,6 @@
 package com.codery.bot.botit.actions;
 
 import com.codery.bot.botit.BotitRobot;
-import com.codery.bot.botit.EventTypes;
 
 /**
  * Created by Thomas.Adriano on 06/09/2016.
@@ -12,12 +11,15 @@ public class Cast extends AbstractAction {
 
     public Cast(int spell, int interval) {
         super(interval);
+        if (super.interval >= 200) {
+            super.interval -= 200; //subtract pressKey inner delay if possible
+        }
         this.spell = spell;
     }
 
     @Override
-    public EventTypes getEventType() {
-        return EventTypes.CAST;
+    public ActionFingerprint getFingerprint() {
+        return new ActionFingerprint(EventKeys.fromCode(spell), ActionTypes.CAST);
     }
 
     @Override

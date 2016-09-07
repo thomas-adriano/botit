@@ -22,32 +22,20 @@ public class Script {
         this.afterScripts = afterScripts;
     }
 
-    public Script pressKey(EventTypes evt) {
-        return this.pressKey(evt, 0);
+    public Script buff(EventKeys evt) {
+        return buff(evt, 0);
     }
 
-    public Script pressKey(EventTypes evt, int interval) {
-        return newAction(new KeyPress(evt.getEventCode(), interval));
+    public Script buff(EventKeys evt, int interval) {
+        return newAction(new Buff(evt.getEventCode(), interval));
     }
 
-    public Script cast(EventTypes evt, int interval) {
+    public Script cast(EventKeys evt) {
+        return cast(evt, 0);
+    }
+
+    public Script cast(EventKeys evt, int interval) {
         return newAction(new Cast(evt.getEventCode(), interval));
-    }
-
-    public Script rightClick() {
-        return this.rightClick(0);
-    }
-
-    public Script rightClick(int interval) {
-        return newAction(new RightClick(interval));
-    }
-
-    public Script leftClick() {
-        return this.leftClick(0);
-    }
-
-    public Script leftClick(int interval) {
-        return newAction(new LeftClick(interval));
     }
 
     private Script newAction(Action act) {
@@ -59,12 +47,12 @@ public class Script {
         return new Script(newActions, this.afterScripts);
     }
 
-    public Script thenAfter(EventTypes evt, int times, Measure measure, Script scr) {
+    public Script thenAfter(ActionTypes actType, EventKeys evt, int times, Measure measure, Script scr) {
         Map<Constraint, Script> newAfterScripts = new HashMap<>();
         if (afterScripts != null) {
             newAfterScripts.putAll(afterScripts);
         }
-        Constraint c = new Constraint(evt, times, measure);
+        Constraint c = new Constraint(new ActionFingerprint(evt, actType), times, measure);
         newAfterScripts.put(c, scr);
         return new Script(this.actions, newAfterScripts);
     }

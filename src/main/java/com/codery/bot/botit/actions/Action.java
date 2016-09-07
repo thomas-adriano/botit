@@ -1,14 +1,13 @@
 package com.codery.bot.botit.actions;
 
 import com.codery.bot.botit.BotitRobot;
-import com.codery.bot.botit.EventTypes;
 
 /**
  * Representation of an {@link com.codery.bot.botit.Script} action.
  */
 public interface Action {
 
-    EventTypes getEventType();
+    ActionFingerprint getFingerprint();
 
     /**
      * Iniitates this action execution logic.

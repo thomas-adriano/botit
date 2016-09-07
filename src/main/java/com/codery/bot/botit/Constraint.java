@@ -1,22 +1,24 @@
 package com.codery.bot.botit;
 
+import com.codery.bot.botit.actions.ActionFingerprint;
+
 /**
  * Created by Thomas.Adriano on 05/09/2016.
  */
 public class Constraint {
 
-    private final EventTypes evt;
+    private final ActionFingerprint actionFingerprint;
     private final int quantity;
     private final Measure measure;
 
-    public Constraint(EventTypes evt, int quantity, Measure measure) {
-        this.evt = evt;
+    public Constraint(ActionFingerprint actionFingerprint, int quantity, Measure measure) {
+        this.actionFingerprint = actionFingerprint;
         this.quantity = quantity;
         this.measure = measure;
     }
 
-    public EventTypes getEvt() {
-        return evt;
+    public ActionFingerprint getActionFingerprint() {
+        return actionFingerprint;
     }
 
     public int getQuantity() {
@@ -30,7 +32,7 @@ public class Constraint {
     @Override
     public String toString() {
         return "Constraint{" +
-                "evt=" + evt +
+                "actionFingerprint=" + actionFingerprint +
                 ", quantity=" + quantity +
                 ", measure=" + measure +
                 '}';
@@ -44,14 +46,14 @@ public class Constraint {
         Constraint that = (Constraint) o;
 
         if (quantity != that.quantity) return false;
-        if (evt != that.evt) return false;
+        if (actionFingerprint != that.actionFingerprint) return false;
         return measure == that.measure;
 
     }
 
     @Override
     public int hashCode() {
-        int result = evt != null ? evt.hashCode() : 0;
+        int result = actionFingerprint != null ? actionFingerprint.hashCode() : 0;
         result = 31 * result + quantity;
         result = 31 * result + (measure != null ? measure.hashCode() : 0);
         return result;
