@@ -52,11 +52,11 @@ public class BotitRobot {
      */
     public void rightClick(int interval) {
         if (started) {
-            interval -= 200;
+            interval -= 120;
             robot.mousePress(InputEvent.BUTTON3_MASK);
-            robot.delay(100);
+            robot.delay(60);
             robot.mouseRelease(InputEvent.BUTTON3_MASK);
-            robot.delay(100);
+            robot.delay(60);
             if (interval > 0) {
                 robot.delay(interval);
             }

@@ -29,7 +29,10 @@ public class Buff extends AbstractAction {
         if (readyToExecute()) {
             execTime = System.currentTimeMillis();
             robot.pressKey(buff, 1000);
-            robot.rightClick(castTime);
+            robot.rightClick(castTime-150);
+            robot.rightClick(50);
+            robot.rightClick(50);
+            robot.rightClick(50);
             return true;
         }
         return false;
